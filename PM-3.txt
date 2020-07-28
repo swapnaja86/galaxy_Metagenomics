@@ -1,0 +1,86 @@
+#Parallel-META Pipeline Version: 3.5.3
+#The reference sequence database is SILVA (16S rRNA, 97% level)
+
+#Microbial Community profiling
+/home/hp/parallel-meta/bin//PM-parallel-meta -r seqs/F3D0_R1.fastq -R seqs/F3D0_R2.fastq -o out_Silva/Single_Sample/F3D0 -t 4 -e very-sensitive-local -f F -P fr -k F -D S
+/home/hp/parallel-meta/bin//PM-parallel-meta -r seqs/F3D1_R1.fastq -R seqs/F3D1_R2.fastq -o out_Silva/Single_Sample/F3D1 -t 4 -e very-sensitive-local -f F -P fr -k F -D S
+/home/hp/parallel-meta/bin//PM-parallel-meta -r seqs/F3D2_R1.fastq -R seqs/F3D2_R2.fastq -o out_Silva/Single_Sample/F3D2 -t 4 -e very-sensitive-local -f F -P fr -k F -D S
+/home/hp/parallel-meta/bin//PM-parallel-meta -r seqs/F3D3_R1.fastq -R seqs/F3D3_R2.fastq -o out_Silva/Single_Sample/F3D3 -t 4 -e very-sensitive-local -f F -P fr -k F -D S
+/home/hp/parallel-meta/bin//PM-parallel-meta -r seqs/F3D5_R1.fastq -R seqs/F3D5_R2.fastq -o out_Silva/Single_Sample/F3D5 -t 4 -e very-sensitive-local -f F -P fr -k F -D S
+/home/hp/parallel-meta/bin//PM-parallel-meta -r seqs/F3D6_R1.fastq -R seqs/F3D6_R2.fastq -o out_Silva/Single_Sample/F3D6 -t 4 -e very-sensitive-local -f F -P fr -k F -D S
+/home/hp/parallel-meta/bin//PM-parallel-meta -r seqs/F3D7_R1.fastq -R seqs/F3D7_R2.fastq -o out_Silva/Single_Sample/F3D7 -t 4 -e very-sensitive-local -f F -P fr -k F -D S
+/home/hp/parallel-meta/bin//PM-parallel-meta -r seqs/F3D8_R1.fastq -R seqs/F3D8_R2.fastq -o out_Silva/Single_Sample/F3D8 -t 4 -e very-sensitive-local -f F -P fr -k F -D S
+/home/hp/parallel-meta/bin//PM-parallel-meta -r seqs/F3D9_R1.fastq -R seqs/F3D9_R2.fastq -o out_Silva/Single_Sample/F3D9 -t 4 -e very-sensitive-local -f F -P fr -k F -D S
+/home/hp/parallel-meta/bin//PM-parallel-meta -r seqs/F3D141_R1.fastq -R seqs/F3D141_R2.fastq -o out_Silva/Single_Sample/F3D141 -t 4 -e very-sensitive-local -f F -P fr -k F -D S
+/home/hp/parallel-meta/bin//PM-parallel-meta -r seqs/F3D142_R1.fastq -R seqs/F3D142_R2.fastq -o out_Silva/Single_Sample/F3D142 -t 4 -e very-sensitive-local -f F -P fr -k F -D S
+/home/hp/parallel-meta/bin//PM-parallel-meta -r seqs/F3D143_R1.fastq -R seqs/F3D143_R2.fastq -o out_Silva/Single_Sample/F3D143 -t 4 -e very-sensitive-local -f F -P fr -k F -D S
+/home/hp/parallel-meta/bin//PM-parallel-meta -r seqs/F3D144_R1.fastq -R seqs/F3D144_R2.fastq -o out_Silva/Single_Sample/F3D144 -t 4 -e very-sensitive-local -f F -P fr -k F -D S
+/home/hp/parallel-meta/bin//PM-parallel-meta -r seqs/F3D145_R1.fastq -R seqs/F3D145_R2.fastq -o out_Silva/Single_Sample/F3D145 -t 4 -e very-sensitive-local -f F -P fr -k F -D S
+/home/hp/parallel-meta/bin//PM-parallel-meta -r seqs/F3D146_R1.fastq -R seqs/F3D146_R2.fastq -o out_Silva/Single_Sample/F3D146 -t 4 -e very-sensitive-local -f F -P fr -k F -D S
+/home/hp/parallel-meta/bin//PM-parallel-meta -r seqs/F3D147_R1.fastq -R seqs/F3D147_R2.fastq -o out_Silva/Single_Sample/F3D147 -t 4 -e very-sensitive-local -f F -P fr -k F -D S
+/home/hp/parallel-meta/bin//PM-parallel-meta -r seqs/F3D148_R1.fastq -R seqs/F3D148_R2.fastq -o out_Silva/Single_Sample/F3D148 -t 4 -e very-sensitive-local -f F -P fr -k F -D S
+/home/hp/parallel-meta/bin//PM-parallel-meta -r seqs/F3D149_R1.fastq -R seqs/F3D149_R2.fastq -o out_Silva/Single_Sample/F3D149 -t 4 -e very-sensitive-local -f F -P fr -k F -D S
+/home/hp/parallel-meta/bin//PM-parallel-meta -r seqs/F3D150_R1.fastq -R seqs/F3D150_R2.fastq -o out_Silva/Single_Sample/F3D150 -t 4 -e very-sensitive-local -f F -P fr -k F -D S
+/home/hp/parallel-meta/bin//PM-parallel-meta -r seqs/Mock_R1.fastq -R seqs/Mock_R2.fastq -o out_Silva/Single_Sample/Mock -t 4 -e very-sensitive-local -f F -P fr -k F -D S
+/home/hp/parallel-meta/bin//PM-select-taxa -l out_Silva/Single_Sample.List/taxa.list -o out_Silva/Abundance_Tables/taxa -L 7 -m 0 -n 0 -z 0 -v 0 -q 0 -D S -r T
+
+#Feature Selection
+/home/hp/parallel-meta/bin//PM-select-taxa -T out_Silva/Abundance_Tables/taxa.OTU.Count -o out_Silva/Abundance_Tables/taxa -L 1 -m 0 -n 0 -D S -r T
+Rscript /home/hp/parallel-meta/Rscript/PM_Distribution.R -m out_Silva/meta.txt -i out_Silva/Abundance_Tables/taxa.phylum.Abd -o out_Silva/Abundance_Tables -p taxa.phylum.Abd
+/home/hp/parallel-meta/bin//PM-select-taxa -T out_Silva/Abundance_Tables/taxa.OTU.Count -o out_Silva/Abundance_Tables/taxa -L 5 -m 0 -n 0 -D S -r T
+Rscript /home/hp/parallel-meta/Rscript/PM_Distribution.R -m out_Silva/meta.txt -i out_Silva/Abundance_Tables/taxa.genus.Abd -o out_Silva/Abundance_Tables -p taxa.genus.Abd
+
+#Function Prediction
+/home/hp/parallel-meta/bin//PM-predict-func -T out_Silva/Abundance_Tables/taxa.OTU.Count -o out_Silva/Abundance_Tables/func -t 4 -D S
+/home/hp/parallel-meta/bin//PM-predict-func-nsti -T out_Silva/Abundance_Tables/taxa.OTU.Count -o out_Silva/Abundance_Tables/func.nsti -D S
+/home/hp/parallel-meta/bin//PM-select-func -T out_Silva/Abundance_Tables/func.KO.Count -o out_Silva/Abundance_Tables/func -L 2 -D S
+Rscript /home/hp/parallel-meta/Rscript/PM_Distribution.R -m out_Silva/meta.txt -i out_Silva/Abundance_Tables/func.l2.Abd -o out_Silva/Abundance_Tables -p func.l2.Abd
+/home/hp/parallel-meta/bin//PM-select-func -T out_Silva/Abundance_Tables/func.KO.Count -o out_Silva/Abundance_Tables/func -L 3 -D S
+Rscript /home/hp/parallel-meta/Rscript/PM_Distribution.R -m out_Silva/meta.txt -i out_Silva/Abundance_Tables/func.l3.Abd -o out_Silva/Abundance_Tables -p func.l3.Abd
+
+#Sample visualization
+/home/hp/parallel-meta/bin//PM-plot-taxa -T out_Silva/Abundance_Tables/taxa.OTU.Count -o out_Silva/Sample_Views/ -D S
+
+#Dist Calculation
+/home/hp/parallel-meta/bin//PM-comp-taxa -T out_Silva/Abundance_Tables/taxa.OTU.Count -o out_Silva/Distance_Matrix/taxa.dist -t 4 -P T -c 2 -D S
+/home/hp/parallel-meta/bin//PM-comp-taxa -T out_Silva/Abundance_Tables/taxa.OTU.Count -o out_Silva/Distance_Matrix/taxa.unweighted.dist -t 4 -P T -c 2 -D S -M 1
+/home/hp/parallel-meta/bin//PM-comp-func -T out_Silva/Abundance_Tables/func.KO.Count -o out_Silva/Distance_Matrix/func.dist -t 4 -P T -c 2 -D S
+
+#Correlation Calculation
+/home/hp/parallel-meta/bin//PM-comp-corr -i out_Silva/Abundance_Tables/taxa.phylum.Count -o out_Silva/Network/taxa.phylum -f 1 -N T -G 0.500000
+/home/hp/parallel-meta/bin//PM-comp-corr -i out_Silva/Abundance_Tables/taxa.genus.Count -o out_Silva/Network/taxa.genus -f 1 -N T -G 0.500000
+
+#PCoA Calculation
+Rscript /home/hp/parallel-meta/Rscript/PM_Pcoa.R -m out_Silva/meta.txt -d out_Silva/Distance_Matrix/taxa.dist -o out_Silva/Clustering/taxa.pcoa.pdf
+Rscript /home/hp/parallel-meta/Rscript/PM_Pcoa.R -m out_Silva/meta.txt -d out_Silva/Distance_Matrix/taxa.unweighted.dist -o out_Silva/Clustering/taxa.unweighted.pcoa.pdf
+Rscript /home/hp/parallel-meta/Rscript/PM_Pcoa.R -m out_Silva/meta.txt -d out_Silva/Distance_Matrix/func.dist -o out_Silva/Clustering/func.pcoa.pdf
+
+#PCA Calculation
+Rscript /home/hp/parallel-meta/Rscript/PM_Pca.R -m out_Silva/meta.txt -i out_Silva/Abundance_Tables/taxa.phylum.Abd -o out_Silva/Clustering/taxa.phylum.pca.pdf
+Rscript /home/hp/parallel-meta/Rscript/PM_Pca.R -m out_Silva/meta.txt -i out_Silva/Abundance_Tables/taxa.genus.Abd -o out_Silva/Clustering/taxa.genus.pca.pdf
+Rscript /home/hp/parallel-meta/Rscript/PM_Pca.R -m out_Silva/meta.txt -i out_Silva/Abundance_Tables/func.l2.Abd -o out_Silva/Clustering/func.l2.pca.pdf
+Rscript /home/hp/parallel-meta/Rscript/PM_Pca.R -m out_Silva/meta.txt -i out_Silva/Abundance_Tables/func.l3.Abd -o out_Silva/Clustering/func.l3.pca.pdf
+
+#Multivariate Statistical Analysis
+Rscript /home/hp/parallel-meta/Rscript/PM_Adiversity.R -m out_Silva/meta.txt -i out_Silva/Abundance_Tables/taxa.phylum.Abd -o out_Silva/Alpha_Diversity -p taxa.phylum
+Rscript /home/hp/parallel-meta/Rscript/PM_Adiversity.R -m out_Silva/meta.txt -i out_Silva/Abundance_Tables/taxa.genus.Abd -o out_Silva/Alpha_Diversity -p taxa.genus
+Rscript /home/hp/parallel-meta/Rscript/PM_Adiversity.R -m out_Silva/meta.txt -i out_Silva/Abundance_Tables/taxa.OTU.Abd -o out_Silva/Alpha_Diversity -p taxa.OTU
+Rscript /home/hp/parallel-meta/Rscript/PM_Bdiversity.R -m out_Silva/meta.txt -d out_Silva/Distance_Matrix/taxa.dist -o out_Silva/Beta_Diversity -p taxa.dist -n Meta-Storms
+Rscript /home/hp/parallel-meta/Rscript/PM_Bdiversity.R -m out_Silva/meta.txt -d out_Silva/Distance_Matrix/taxa.unweighted.dist -o out_Silva/Beta_Diversity -p taxa.unweighted.dist -n Meta-Storms-unweighed
+Rscript /home/hp/parallel-meta/Rscript/PM_Adiversity.R -m out_Silva/meta.txt -i out_Silva/Abundance_Tables/func.l2.Abd -o out_Silva/Alpha_Diversity -p func.l2
+Rscript /home/hp/parallel-meta/Rscript/PM_Adiversity.R -m out_Silva/meta.txt -i out_Silva/Abundance_Tables/func.l3.Abd -o out_Silva/Alpha_Diversity -p func.l3
+Rscript /home/hp/parallel-meta/Rscript/PM_Bdiversity.R -m out_Silva/meta.txt -d out_Silva/Distance_Matrix/func.dist -o out_Silva/Beta_Diversity -p func.dist -n Cosine
+
+#Marker Analysis
+Rscript /home/hp/parallel-meta/Rscript/PM_Marker_Test.R -i out_Silva/Abundance_Tables/taxa.phylum.Abd -m out_Silva/meta.txt -o out_Silva/Markers -p taxa.phylum -P F
+Rscript /home/hp/parallel-meta/Rscript/PM_Marker_RFscore.R -i out_Silva/Abundance_Tables/taxa.phylum.Abd -m out_Silva/meta.txt -o out_Silva/Markers -p taxa.phylum
+Rscript /home/hp/parallel-meta/Rscript/PM_Marker_Corr.R -i out_Silva/Abundance_Tables/taxa.phylum.Abd -m out_Silva/meta.txt -o out_Silva/Markers -p taxa.phylum
+Rscript /home/hp/parallel-meta/Rscript/PM_Marker_Test.R -i out_Silva/Abundance_Tables/taxa.genus.Abd -m out_Silva/meta.txt -o out_Silva/Markers -p taxa.genus -P F
+Rscript /home/hp/parallel-meta/Rscript/PM_Marker_RFscore.R -i out_Silva/Abundance_Tables/taxa.genus.Abd -m out_Silva/meta.txt -o out_Silva/Markers -p taxa.genus
+Rscript /home/hp/parallel-meta/Rscript/PM_Marker_Corr.R -i out_Silva/Abundance_Tables/taxa.genus.Abd -m out_Silva/meta.txt -o out_Silva/Markers -p taxa.genus
+Rscript /home/hp/parallel-meta/Rscript/PM_Marker_Test.R -i out_Silva/Abundance_Tables/func.l2.Abd -m out_Silva/meta.txt -o out_Silva/Markers -p func.l2 -P F
+Rscript /home/hp/parallel-meta/Rscript/PM_Marker_RFscore.R -i out_Silva/Abundance_Tables/func.l2.Abd -m out_Silva/meta.txt -o out_Silva/Markers -p func.l2
+Rscript /home/hp/parallel-meta/Rscript/PM_Marker_Corr.R -i out_Silva/Abundance_Tables/func.l2.Abd -m out_Silva/meta.txt -o out_Silva/Markers -p func.l2
+Rscript /home/hp/parallel-meta/Rscript/PM_Marker_Test.R -i out_Silva/Abundance_Tables/func.l3.Abd -m out_Silva/meta.txt -o out_Silva/Markers -p func.l3 -P F
+Rscript /home/hp/parallel-meta/Rscript/PM_Marker_RFscore.R -i out_Silva/Abundance_Tables/func.l3.Abd -m out_Silva/meta.txt -o out_Silva/Markers -p func.l3
+Rscript /home/hp/parallel-meta/Rscript/PM_Marker_Corr.R -i out_Silva/Abundance_Tables/func.l3.Abd -m out_Silva/meta.txt -o out_Silva/Markers -p func.l3
