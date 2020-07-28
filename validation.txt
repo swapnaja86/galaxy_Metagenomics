@@ -1,0 +1,226 @@
+R version 3.6.1 (2019-07-05) -- "Action of the Toes"
+Copyright (C) 2019 The R Foundation for Statistical Computing
+Platform: x86_64-w64-mingw32/x64 (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> library("mbtools")
+Also loading: dada2 1.12.1
+Also loading: data.table 1.12.8
+Also loading: ggplot2 3.3.0
+Also loading: magrittr 1.5
+Also loading: phyloseq 1.28.0
+Also loading: ShortRead 1.42.0
+Also loading: yaml 2.2.1
+
+Attaching package: mbtools
+
+The following object is masked _by_ package:BiocGenerics:
+
+    normalize
+
+Warning messages:
+1: package Rcpp was built under R version 3.6.3 
+2: package matrixStats was built under R version 3.6.3 
+3: package yaml was built under R version 3.6.2 
+> if (!file.exists("mock4.rds")) {
++     mock <- mockrobiota("mock-4", "mock4")
++     saveRDS(mock, "mock4.rds")
++ } else mock <- readRDS("mock4.rds")
+trying URL 'https://s3-us-west-2.amazonaws.com/mockrobiota/latest/mock-4/mock-forward-read.fastq.gz'
+Content type 'application/x-gzip' length 395053321 bytes (376.8 MB)
+downloaded 376.8 MB
+
+trying URL 'https://s3-us-west-2.amazonaws.com/mockrobiota/latest/mock-4/mock-reverse-read.fastq.gz'
+Content type 'application/x-gzip' length 473091995 bytes (451.2 MB)
+downloaded 451.2 MB
+
+trying URL 'https://s3-us-west-2.amazonaws.com/mockrobiota/latest/mock-4/mock-index-read.fastq.gz'
+Content type 'application/x-gzip' length 63112093 bytes (60.2 MB)
+downloaded 60.2 MB
+
+> names(mock)
+ [1] "description" "forward"     "reverse"     "index"       "citation"   
+ [6] "fragment"    "equipment"   "samples"     "ps_gg"       "ps_silva"   
+> mock$samples
+                                     SampleID BarcodeSequence
+HMPMockV1.1.Even1           HMPMockV1.1.Even1    TGTACGGATAAC
+HMPMockV1.1.Even2           HMPMockV1.1.Even2    CAAATGGTCGTC
+HMPMockV1.2.Staggered1 HMPMockV1.2.Staggered1    AATCAACTAGGC
+HMPMockV1.2.Staggered2 HMPMockV1.2.Staggered2    ACACATAAGTCG
+                       LinkerPrimerSequence        ReversePrimer PrimerName
+HMPMockV1.1.Even1       GTGCCAGCMGCCGCGGTAA GGACTACHVGGGTWTCTAAT  515f-806r
+HMPMockV1.1.Even2       GTGCCAGCMGCCGCGGTAA GGACTACHVGGGTWTCTAAT  515f-806r
+HMPMockV1.2.Staggered1  GTGCCAGCMGCCGCGGTAA GGACTACHVGGGTWTCTAAT  515f-806r
+HMPMockV1.2.Staggered2  GTGCCAGCMGCCGCGGTAA GGACTACHVGGGTWTCTAAT  515f-806r
+                       Description
+HMPMockV1.1.Even1         Nenehozi
+HMPMockV1.1.Even2         Tofekoca
+HMPMockV1.2.Staggered1    Kalofiyo
+HMPMockV1.2.Staggered2    Pewizifo
+> reads <- c(mock$forward, mock$reverse)
+> barcodes <- mock$samples$BarcodeSequence
+> names(barcodes) <- mock$samples[,1]
+> bcs <- split_barcodes(reads, mock$index, "split", barcodes)
+> fwd <- list.files("split", pattern="forward", full.names=T)
+> bwd <- list.files("split", pattern="reverse", full.names=T)
+> fwd
+[1] "split/HMPMockV1.1.Even1_mock-forward-read.fastq.gz"     
+[2] "split/HMPMockV1.1.Even2_mock-forward-read.fastq.gz"     
+[3] "split/HMPMockV1.2.Staggered1_mock-forward-read.fastq.gz"
+[4] "split/HMPMockV1.2.Staggered2_mock-forward-read.fastq.gz"
+> plotQualityProfile(reads[1])
+> plotQualityProfile(reads[2])
+> dir.create("filtered")
+> fwd_filt <- file.path("filtered", basename(fwd))
+> bwd_filt <- file.path("filtered", basename(bwd))
+> filt <- filterAndTrim(fwd, fwd_filt, bwd, bwd_filt,
++                       trimLeft=10, truncLen=c(140, 100),
++                       compress=T, multithread=F)
+> filt
+                                                  reads.in reads.out
+HMPMockV1.1.Even1_mock-forward-read.fastq.gz       1236898   1216195
+HMPMockV1.1.Even2_mock-forward-read.fastq.gz        808308    797208
+HMPMockV1.2.Staggered1_mock-forward-read.fastq.gz   838791    825665
+HMPMockV1.2.Staggered2_mock-forward-read.fastq.gz   918465    905396
+> derepFs <- derepFastq(fwd_filt, verbose=TRUE)
+Dereplicating sequence entries in Fastq file: filtered/HMPMockV1.1.Even1_mock-forward-read.fastq.gz
+.Encountered 95580 unique sequences from 1216195 total sequences read.
+Dereplicating sequence entries in Fastq file: filtered/HMPMockV1.1.Even2_mock-forward-read.fastq.gz
+Encountered 72797 unique sequences from 797208 total sequences read.
+Dereplicating sequence entries in Fastq file: filtered/HMPMockV1.2.Staggered1_mock-forward-read.fastq.gz
+Encountered 76415 unique sequences from 825665 total sequences read.
+Dereplicating sequence entries in Fastq file: filtered/HMPMockV1.2.Staggered2_mock-forward-read.fastq.gz
+Encountered 72114 unique sequences from 905396 total sequences read.
+> derepRs <- derepFastq(bwd_filt, verbose=TRUE)
+Dereplicating sequence entries in Fastq file: filtered/HMPMockV1.1.Even1_mock-reverse-read.fastq.gz
+.Encountered 106375 unique sequences from 1216195 total sequences read.
+Dereplicating sequence entries in Fastq file: filtered/HMPMockV1.1.Even2_mock-reverse-read.fastq.gz
+Encountered 68054 unique sequences from 797208 total sequences read.
+Dereplicating sequence entries in Fastq file: filtered/HMPMockV1.2.Staggered1_mock-reverse-read.fastq.gz
+Encountered 80575 unique sequences from 825665 total sequences read.
+Dereplicating sequence entries in Fastq file: filtered/HMPMockV1.2.Staggered2_mock-reverse-read.fastq.gz
+Encountered 70459 unique sequences from 905396 total sequences read.
+> names(derepFs) <- names(derepRs) <- names(barcodes)
+> dadaFs <- dada(derepFs, err=NULL, selfConsist = TRUE, multithread = TRUE)
+Initializing error rates to maximum possible estimate.
+selfConsist step 1 ....
+   selfConsist step 2
+   selfConsist step 3
+   selfConsist step 4
+   selfConsist step 5
+   selfConsist step 6
+   selfConsist step 7
+   selfConsist step 8
+Convergence after  8  rounds.
+> dadaRs <- dada(derepRs, err=NULL, selfConsist = TRUE, multithread = TRUE)
+Initializing error rates to maximum possible estimate.
+selfConsist step 1 ....
+   selfConsist step 2
+   selfConsist step 3
+   selfConsist step 4
+   selfConsist step 5
+   selfConsist step 6
+   selfConsist step 7
+Convergence after  7  rounds.
+> plotErrors(dadaFs, nominalQ=TRUE)
+Warning message:
+Transformation introduced infinite values in continuous y-axis 
+> plotErrors(dadaRs, nominalQ=TRUE)
+Warning message:
+Transformation introduced infinite values in continuous y-axis 
+> seqtab_fwd <- makeSequenceTable(dadaFs)
+> seqtab_bwd <- makeSequenceTable(dadaRs)
+> seqtab <- cbind(seqtab_fwd, seqtab_bwd)
+> seqtab_nochim <- removeBimeraDenovo(seqtab, verbose=TRUE)
+Identified 292 bimeras out of 432 input sequences.
+> saveRDS(seqtab_nochim, "svs.rds")
+> if (!file.exists("gg_138.fa.gz"))
++     download.file("https://zenodo.org/record/158955/files/gg_13_8_train_set_97.fa.gz",
++         "gg_138.fa.gz")
+trying URL 'https://zenodo.org/record/158955/files/gg_13_8_train_set_97.fa.gz'
+Content type 'application/octet-stream' length 31387049 bytes (29.9 MB)
+downloaded 29.9 MB
+
+> taxa <- assignTaxonomy(seqtab_nochim, "gg_138.fa.gz", multithread=TRUE)
+> colnames(taxa) <- c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species")
+> head(unname(taxa))
+     [,1]          [,2]                [,3]                    
+[1,] "k__Bacteria" "p__Firmicutes"     "c__Bacilli"            
+[2,] "k__Bacteria" "p__Proteobacteria" "c__Gammaproteobacteria"
+[3,] "k__Bacteria" "p__Firmicutes"     "c__Bacilli"            
+[4,] "k__Bacteria" "p__Proteobacteria" "c__Alphaproteobacteria"
+[5,] "k__Bacteria" "p__Proteobacteria" "c__Gammaproteobacteria"
+[6,] "k__Bacteria" "p__[Thermi]"       "c__Deinococci"         
+     [,4]                   [,5]                    [,6]               
+[1,] "o__Bacillales"        "f__Staphylococcaceae"  "g__Staphylococcus"
+[2,] "o__Pseudomonadales"   "f__Moraxellaceae"      "g__Acinetobacter" 
+[3,] "o__Lactobacillales"   "f__Streptococcaceae"   "g__Streptococcus" 
+[4,] "o__Rhodobacterales"   "f__Rhodobacteraceae"   "g__Rhodobacter"   
+[5,] "o__Enterobacteriales" "f__Enterobacteriaceae" "g__Escherichia"   
+[6,] "o__Deinococcales"     "f__Deinococcaceae"     "g__Deinococcus"   
+     [,7]            
+[1,] "s__"           
+[2,] NA              
+[3,] "s__"           
+[4,] "s__sphaeroides"
+[5,] "s__coli"       
+[6,] "s__"           
+> taxa[grep("__$", taxa)] <- NA
+> ps <- phyloseq(otu_table(seqtab_nochim, taxa_are_rows=FALSE),
++ tax_table(taxa))
+> taxa_metrics(tax_table(ps), tax_table(mock$ps_gg))
+    level precision recall        F1 n_exp n_ref
+1 Kingdom 1.0000000   1.00 1.0000000     2     2
+2  Phylum 0.8571429   1.00 0.9230769     7     6
+3   Class 0.8333333   1.00 0.9090909    12    10
+4   Order 0.6666667   1.00 0.8000000    18    12
+5  Family 0.6666667   1.00 0.8000000    27    18
+6   Genus 0.6666667   1.00 0.8000000    27    18
+7 Species 0.5294118   0.45 0.4864865    17    20
+> tq <- taxa_quants(ps, mock$ps_gg, normalize = TRUE)
+> head(tq)
+    level        name                 sample    measured  reference
+1 Kingdom k__Bacteria      HMPMockV1.1.Even1 0.952576814 0.95238095
+2 Kingdom  k__Archaea      HMPMockV1.1.Even1 0.018616473 0.04761905
+3 Kingdom k__Bacteria      HMPMockV1.1.Even2 0.982652731 0.95238095
+4 Kingdom  k__Archaea      HMPMockV1.1.Even2 0.001401979 0.04761905
+5 Kingdom k__Bacteria HMPMockV1.2.Staggered1 0.982056771 0.78563773
+6 Kingdom  k__Archaea HMPMockV1.2.Staggered1 0.001586491 0.21436227
+> ggplot(tq, aes(x=reference, y=measured, col=level)) +
++     geom_abline(alpha=0.5) +
++     geom_smooth(aes(group=1), method="lm", lty="dashed") +
++     geom_point() +
++     facet_wrap(~ sample)
+`geom_smooth()` using formula 'y ~ x'
+> ggplot(tq, aes(x=reference, y=measured, col=sample)) +
++     geom_abline(alpha=0.5) +
++     geom_smooth(aes(group=1), method="lm", lty="dashed") +
++     geom_point() +
++     theme(legend.position="bottom") +
++     facet_wrap(~ level, scale="free")
+`geom_smooth()` using formula 'y ~ x'
+> cor.test(tq$measured, tq$reference)
+
+        Pearson's product-moment correlation
+
+data:  tq$measured and tq$reference
+t = 27.056, df = 298, p-value < 2.2e-16
+alternative hypothesis: true correlation is not equal to 0
+95 percent confidence interval:
+ 0.806799 0.872927
+sample estimates:
+      cor 
+0.8430194 
